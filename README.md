@@ -8,6 +8,12 @@ It simulates a small **Barangay Chairperson** election using **fictional, in-mem
 
 ---
 
+## Screenshot
+
+<img src="https://github.com/user-attachments/assets/cfa32905-6e0b-4792-84c4-1e42cf53f82f" alt="Main menu of the Barangay Election Simulation" width="700">
+
+---
+
 ## Requirements
 
 | Item | Value |
