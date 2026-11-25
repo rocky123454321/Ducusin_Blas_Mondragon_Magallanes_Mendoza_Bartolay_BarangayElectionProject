@@ -20,6 +20,57 @@ Check your version with `dotnet --version`.
 If you only have .NET 9/10, it still runs (the project is set to roll forward). You may also change
 `<TargetFramework>net8.0</TargetFramework>` in `BarangayElection.csproj` to `net9.0` / `net10.0`.
 
+## Run it on your PC (from GitHub)
+
+Repository: <https://github.com/rocky123454321/Ducusin_Blas_Mondragon_Magallanes_Mendoza_Bartolay_BarangayElectionProject>
+
+**1. Install the .NET SDK (one time only)**
+
+- Download the **.NET SDK 8.0 or newer** from <https://dotnet.microsoft.com/download> and install it.
+- Close and reopen your terminal, then check it works:
+
+```bash
+dotnet --version
+```
+
+If it prints a version number such as `8.0.x`, `9.0.x` or `10.0.x`, you are ready.
+
+**2. Get the code** (choose one)
+
+- **With Git:**
+
+```bash
+git clone https://github.com/rocky123454321/Ducusin_Blas_Mondragon_Magallanes_Mendoza_Bartolay_BarangayElectionProject.git
+cd Ducusin_Blas_Mondragon_Magallanes_Mendoza_Bartolay_BarangayElectionProject
+```
+
+- **Without Git:** on the GitHub page click **Code > Download ZIP**, extract it, then open a terminal inside the extracted folder (the one that contains this README).
+
+**3. Run the program**
+
+```bash
+dotnet run --project src/BarangayElection
+```
+
+The first run builds the project automatically (it may take a few seconds). The dashboard and main menu then appear.
+Type a number from the menu and press **Enter**. Choose `0` to exit.
+
+**Other ways to run**
+
+- **VS Code:** *File > Open Folder* and choose the project folder, open **Terminal > New Terminal**, then run the command in step 3. (If the Run button shows `csdevkit.debug.noDebugFileLaunch` not found, just use the terminal command.)
+- **Visual Studio:** open `BarangayElection.sln` and press **F5**.
+
+**Troubleshooting**
+
+| Problem | Fix |
+|---------|-----|
+| `dotnet` is not recognized | Install the .NET SDK, then close and reopen the terminal (or restart the PC). |
+| `Couldn't find a project to run` | You are in the wrong folder. Go to the folder that contains `README.md` and `src`. |
+| Boxes or bars look like `?` or strange symbols | Use **Windows Terminal** or the **VS Code terminal** instead of the old Command Prompt window. |
+| Build says it cannot find .NET 8 | Install .NET 8, or change `net8.0` in `src/BarangayElection/BarangayElection.csproj` to your installed version (for example `net9.0`). |
+
+---
+
 ## Build and run
 
 ```bash
@@ -33,7 +84,7 @@ In Visual Studio: open `BarangayElection.sln` and press **F5**.
 ## Folder structure
 
 ```
-BarangayElectionProject/
+Ducusin_Blas_Mondragon_Magallanes_Mendoza_Bartolay_BarangayElectionProject/
 ├── README.md
 ├── BarangayElection.sln
 ├── .gitignore
