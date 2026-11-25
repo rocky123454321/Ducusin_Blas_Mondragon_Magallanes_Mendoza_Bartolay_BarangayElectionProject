@@ -22,9 +22,9 @@ public static class SampleData
         // Registered voters (at least 10)
         string[] voterNames =
         {
-            "Lourdes Aquino", "Benito Cruz", "Carmela Dizon", "Teodoro Evangelista",
-            "Felisa Garcia", "Gregorio Hernandez", "Imelda Javier", "Jose Katigbak",
-            "Luzviminda Manalo", "Nestor Ocampo", "Patricia Quizon", "Rodel Salazar"
+            "Rocky Ducusin", "Tristan Blas", "Cjosh Mondragon", "Ford Magallanes",
+            "Elijah Mendoza", "Katsutoshi Bartolay", "Lourdes Aquino", "Benito Cruz",
+            "Carmela Dizon", "Teodoro Evangelista", "Felisa Garcia", "Gregorio Hernandez"
         };
 
         for (int i = 0; i < voterNames.Length; i++)
