@@ -2,14 +2,6 @@ namespace BarangayElection.Services;
 
 using BarangayElection.Models;
 
-/// <summary>
-/// ENCAPSULATION: owns all election state and is the ONLY way to change it.
-///  - _candidates : who can be voted for
-///  - _voters     : the voter registry (stores "has voted" status only)
-///  - _ballots    : anonymous ballots (candidate ID only, no voter link)
-/// All three collections are private; the outside world gets read-only views
-/// and must go through RegisterX / CastVote, which enforce the rules.
-/// </summary>
 public sealed class ElectionManager
 {
     public const string Position = "Barangay Chairperson";
@@ -18,8 +10,6 @@ public sealed class ElectionManager
     private readonly Dictionary<string, Voter> _voters = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<Ballot> _ballots = new();
     private readonly Random _random = new();
-
-    // ---------- Read-only views ----------
 
     public IReadOnlyList<Candidate> Candidates => _candidates.AsReadOnly();
 
@@ -30,14 +20,8 @@ public sealed class ElectionManager
     public int VotesCast => _ballots.Count;
     public int RemainingVoterCount => _voters.Values.Count(v => !v.HasVoted);
 
-    /// <summary>
-    /// Candidates and voters as ONE list of the base type. Callers use it polymorphically:
-    /// each item's own GetSummary()/Role override runs at runtime.
-    /// </summary>
     public IEnumerable<ElectionParticipant> GetAllParticipants() =>
         _candidates.Cast<ElectionParticipant>().Concat(Voters.Cast<ElectionParticipant>());
-
-    // ---------- Controlled registration (setup phase only) ----------
 
     public void RegisterCandidate(Candidate candidate)
     {
@@ -59,15 +43,8 @@ public sealed class ElectionManager
             throw new InvalidOperationException($"Voter ID '{voter.Id}' already exists.");
     }
 
-    // ---------- Voting ----------
-
-    /// <summary>Checks (without changing anything) whether this voter ID may vote.</summary>
     public VoteResult CheckVoterEligibility(string? voterId) => CheckVoter(voterId, out _);
 
-    /// <summary>
-    /// Validates everything, then stores an anonymous ballot and marks the voter as voted.
-    /// Nothing is changed unless ALL checks pass.
-    /// </summary>
     public VoteResult CastVote(string? voterId, string? candidateId)
     {
         VoteResult voterCheck = CheckVoter(voterId, out Voter? voter);
@@ -83,8 +60,6 @@ public sealed class ElectionManager
             return new(VoteStatus.UnknownCandidate,
                 $"Candidate ID '{candidateId.Trim()}' does not exist. Choose an ID from the candidate list.");
 
-        // PRIVACY: the ballot gets ONLY the candidate ID. It is inserted at a random position
-        // so the order of ballots cannot reveal the order in which voters voted.
         _ballots.Insert(_random.Next(_ballots.Count + 1), new Ballot(candidate.Id));
         voter.MarkAsVoted();
 
@@ -92,9 +67,6 @@ public sealed class ElectionManager
             $"Vote recorded for voter {voter.Id}. The ballot choice is stored anonymously.");
     }
 
-    // ---------- Results ----------
-
-    /// <summary>Counts anonymous ballots per candidate. Contains no voter information.</summary>
     public ElectionTally GetTally()
     {
         int total = _ballots.Count;
@@ -111,8 +83,6 @@ public sealed class ElectionManager
 
         return new ElectionTally(results, total, _voters.Count);
     }
-
-    // ---------- Private helpers ----------
 
     private Candidate? FindCandidate(string id) =>
         _candidates.FirstOrDefault(c => string.Equals(c.Id, id, StringComparison.OrdinalIgnoreCase));
@@ -138,7 +108,6 @@ public sealed class ElectionManager
         return new(VoteStatus.Accepted, "Voter is eligible.");
     }
 
-    // Once the first ballot exists, the registry is locked so records cannot change mid-election.
     private void EnsureRegistrationOpen()
     {
         if (_ballots.Count > 0)

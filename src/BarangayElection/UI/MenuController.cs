@@ -3,10 +3,6 @@ namespace BarangayElection.UI;
 using BarangayElection.Models;
 using BarangayElection.Services;
 
-/// <summary>
-/// The menu "controller": reads what the user types, calls ElectionManager, and asks
-/// ConsoleUi to draw the answer. It contains NO voting rules - those live in ElectionManager.
-/// </summary>
 internal sealed class MenuController
 {
     private static readonly ConsoleColor[] CandidateColors =
@@ -33,7 +29,7 @@ internal sealed class MenuController
             ShowHome();
             string? choice = _ui.Prompt("Select an option (0-5)");
 
-            if (choice is null) break; // input stream ended - exit cleanly
+            if (choice is null) break;
 
             switch (choice.Trim())
             {
@@ -57,8 +53,6 @@ internal sealed class MenuController
         _ui.Clear();
         _ui.Header("Goodbye!", "Thank you for trying the Barangay Election Simulation.");
     }
-
-    // ---------- Screens ----------
 
     private void ShowHome()
     {
@@ -106,7 +100,6 @@ internal sealed class MenuController
 
         string? voterId = _ui.Prompt("Enter Voter ID (e.g. V001)");
 
-        // Check the voter BEFORE showing the ballot, so ineligible voters are stopped early.
         VoteResult eligibility = _election.CheckVoterEligibility(voterId);
         if (!eligibility.IsAccepted)
         {
@@ -131,7 +124,6 @@ internal sealed class MenuController
             return;
         }
 
-        // Wipe the screen so the next person cannot see which candidate was chosen.
         _ui.Clear();
         _ui.Header("VOTE COMPLETE", "Thank you!");
         _ui.Success(result.Message);
@@ -191,11 +183,6 @@ internal sealed class MenuController
         _ui.Pause();
     }
 
-    /// <summary>
-    /// POLYMORPHISM DEMO: one list typed as the base class ElectionParticipant holds both
-    /// Candidates and Voters. The same calls (p.Role, p.GetSummary()) run a different
-    /// override depending on the real object type - decided at runtime.
-    /// </summary>
     private void ShowParticipantDirectory()
     {
         _ui.Clear();
@@ -205,14 +192,12 @@ internal sealed class MenuController
         foreach (ElectionParticipant participant in _election.GetAllParticipants())
         {
             lines.Add(new UiLine($"[{participant.Role}]", ConsoleColor.Cyan));
-            lines.Add(new UiLine("   " + participant.GetSummary())); // Voter or Candidate override runs here
+            lines.Add(new UiLine("   " + participant.GetSummary()));
         }
 
         _ui.Panel("ALL PARTICIPANTS", lines);
         _ui.Pause();
     }
-
-    // ---------- Helpers ----------
 
     private void ShowCandidatePanel()
     {

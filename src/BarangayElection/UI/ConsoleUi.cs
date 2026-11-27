@@ -1,27 +1,18 @@
 namespace BarangayElection.UI;
 
-/// <summary>One line of text inside a panel, with its colour.</summary>
 internal readonly record struct UiLine(string Text, ConsoleColor Color = ConsoleColor.Gray);
 
-/// <summary>A small "stat card" like the ones at the top of a dashboard.</summary>
 internal readonly record struct StatCard(string Label, string Value, string Note, ConsoleColor Color);
 
-/// <summary>
-/// All console drawing lives here (cards, panels, bars, prompts), so the rest of the
-/// program never touches Console colours or box characters. To change the look of the
-/// app, edit this file only.
-/// </summary>
 internal sealed class ConsoleUi
 {
     public const int Width = 79;
     private const ConsoleColor Border = ConsoleColor.DarkGray;
 
-    // ---------- Screen helpers ----------
-
     public void Clear()
     {
         try { Console.Clear(); }
-        catch (IOException) { /* output is redirected (e.g. during tests) - ignore */ }
+        catch (IOException) { }
     }
 
     public void Header(string title, string subtitle)
@@ -34,9 +25,6 @@ internal sealed class ConsoleUi
 
     public void BlankLine() => Console.WriteLine();
 
-    // ---------- Dashboard components ----------
-
-    /// <summary>Row of stat cards (label, big value, small note).</summary>
     public void StatCards(IReadOnlyList<StatCard> cards)
     {
         const int gap = 1;
@@ -50,7 +38,6 @@ internal sealed class ConsoleUi
         CardBorderRow(cards.Count, "└", "┘", inner);
     }
 
-    /// <summary>A bordered panel with a title and any number of lines (long lines are wrapped).</summary>
     public void Panel(string title, IEnumerable<UiLine> lines, ConsoleColor titleColor = ConsoleColor.White)
     {
         int inner = Width - 2;
@@ -67,20 +54,16 @@ internal sealed class ConsoleUi
         WriteLine("└" + new string('─', inner) + "┘", Border);
     }
 
-    /// <summary>Horizontal bar such as ███████░░░░░ for a percentage.</summary>
     public static string Bar(double percent, int width)
     {
         int filled = (int)Math.Round(Math.Clamp(percent, 0, 100) / 100.0 * width);
         return new string('█', filled) + new string('░', width - filled);
     }
 
-    // ---------- Messages & input ----------
-
     public void Success(string message) => WriteLine("  [OK] " + message, ConsoleColor.Green);
     public void Error(string message) => WriteLine("  [X]  " + message, ConsoleColor.Red);
     public void Info(string message) => WriteLine("  [i]  " + message, ConsoleColor.Cyan);
 
-    /// <summary>Asks for text. Returns null if input has ended (Ctrl+Z / Ctrl+D).</summary>
     public string? Prompt(string label)
     {
         Console.WriteLine();
@@ -94,8 +77,6 @@ internal sealed class ConsoleUi
         Write("  Press Enter to return to the menu...", ConsoleColor.DarkGray);
         Console.ReadLine();
     }
-
-    // ---------- Private drawing helpers ----------
 
     private static void CardBorderRow(int count, string left, string right, int inner)
     {
@@ -111,7 +92,7 @@ internal sealed class ConsoleUi
         IReadOnlyList<StatCard> cards, int cardWidth,
         Func<StatCard, string> text, Func<StatCard, ConsoleColor> color)
     {
-        int textWidth = cardWidth - 4; // minus 2 borders and 2 padding spaces
+        int textWidth = cardWidth - 4;
         for (int i = 0; i < cards.Count; i++)
         {
             Write("│", Border);
@@ -129,7 +110,6 @@ internal sealed class ConsoleUi
         WriteLine("│", Border);
     }
 
-    /// <summary>Pads or trims text to exactly <paramref name="width"/> characters.</summary>
     private static string Fit(string text, int width)
     {
         if (text.Length > width)
@@ -137,7 +117,6 @@ internal sealed class ConsoleUi
         return text.PadRight(width);
     }
 
-    /// <summary>Word-wraps text, keeping its leading indentation on continuation lines.</summary>
     private static IEnumerable<string> Wrap(string text, int width)
     {
         if (text.Length <= width)
